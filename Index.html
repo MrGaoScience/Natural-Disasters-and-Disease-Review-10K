@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Revision: Natural Disasters and Disease</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#46178f; --bg2:#2d0f5e; --card:#ffffff; --ink:#1b1233; --on:#ffffff;
+  --red:#e21b3c; --blue:#1368ce; --yellow:#d89e00; --green:#26890c; --good:#26890c;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#33106b; --bg2:#1d0a40; } }
+:root[data-theme="dark"]{ --bg:#33106b; --bg2:#1d0a40; }
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;color:var(--on);display:flex;flex-direction:column;
+  font-family:"Montserrat","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  background:radial-gradient(circle at 20% 0%,var(--bg) 0%,var(--bg2) 100%) var(--bg2);
+}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px}
+.pill{background:var(--card);color:var(--ink);font-weight:800;border-radius:999px;padding:8px 18px;font-size:clamp(14px,1.8vw,22px)}
+.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.dot{width:14px;height:14px;border-radius:50%;border:3px solid rgba(255,255,255,.5);background:transparent;cursor:pointer;padding:0}
+.dot.done{background:rgba(255,255,255,.5)}
+.dot.cur{background:#fff;border-color:#fff}
+main{flex:1;display:flex;flex-direction:column;width:100%;max-width:1300px;margin:0 auto;padding:6px 24px 12px;gap:18px}
+.q{
+  background:var(--card);color:var(--ink);border-radius:14px;margin:0;text-align:center;
+  font-weight:800;font-size:clamp(24px,3.8vw,48px);line-height:1.2;padding:clamp(18px,3.5vw,40px);
+  box-shadow:0 6px 0 rgba(0,0,0,.25)
+}
+.opts{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:stretch}
+.opt{
+  position:relative;display:flex;align-items:center;gap:18px;min-height:clamp(90px,17vh,170px);
+  border-radius:10px;padding:14px 22px;color:#fff;font-weight:800;
+  font-size:clamp(18px,2.7vw,34px);line-height:1.2;box-shadow:0 6px 0 rgba(0,0,0,.28);
+  transition:opacity .3s,transform .3s,filter .3s
+}
+.opt svg{flex:none;width:clamp(30px,4vw,52px);height:clamp(30px,4vw,52px);fill:#fff}
+.ltr{flex:none;width:clamp(44px,6vw,80px);height:clamp(44px,6vw,80px);border-radius:12px;background:#fff;display:grid;place-items:center;font-weight:900;font-size:clamp(28px,4.2vw,56px);line-height:1}
+.c0 .ltr{color:var(--red)} .c1 .ltr{color:var(--blue)} .c2 .ltr{color:var(--yellow)} .c3 .ltr{color:var(--green)}
+.opt.c0{background:var(--red)} .opt.c1{background:var(--blue)}
+.opt.c2{background:var(--yellow)} .opt.c3{background:var(--green)}
+.tick{display:none;margin-left:auto;flex:none;width:clamp(34px,4.5vw,58px);height:clamp(34px,4.5vw,58px);
+  border-radius:50%;background:#fff;color:var(--good);place-items:center;font-size:clamp(22px,3vw,40px);font-weight:900}
+.revealed .opt{opacity:.22;filter:saturate(.4);transform:scale(.97)}
+.revealed .opt.correct{opacity:1;filter:none;transform:scale(1.015);outline:6px solid #fff}
+.revealed .opt.correct .tick{display:grid}
+.why{
+  display:none;background:var(--card);color:var(--ink);border-radius:14px;padding:16px 24px;
+  font-weight:600;font-size:clamp(16px,2.1vw,26px);line-height:1.4;box-shadow:0 6px 0 rgba(0,0,0,.25)
+}
+.why b{color:var(--good);font-weight:900}
+.revealed .why{display:block}
+footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 24px 16px;font-size:13px;opacity:.85}
+.btns{display:flex;gap:10px}
+button.ctl{font:inherit;font-weight:800;font-size:16px;padding:12px 24px;border-radius:8px;cursor:pointer;
+  border:0;background:rgba(255,255,255,.18);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+button.ctl.primary{background:#fff;color:var(--bg)}
+button.ctl:disabled{opacity:.35;cursor:default}
+.end{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:24px;
+  background:repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.07) 0 40px,rgba(255,255,255,0) 40px 80px)}
+.end h1{margin:0;font-weight:900;font-size:clamp(44px,10vw,140px);line-height:1.05;text-shadow:0 6px 0 rgba(0,0,0,.3)}
+.end p{margin:0;font-weight:800;font-size:clamp(18px,3vw,38px)}
+.end .sub{font-weight:600;font-size:clamp(14px,1.8vw,22px);opacity:.8}
+.end .bar{display:flex;gap:10px;margin-top:10px}
+.end .bar span{width:clamp(30px,5vw,60px);height:clamp(12px,1.6vw,20px);border-radius:6px}
+@media (max-width:700px){ .opts{grid-template-columns:1fr} header,main,footer{padding-left:14px;padding-right:14px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="pill" id="num"></div>
+  <div class="dots" id="dots"></div>
+</header>
+<main id="main">
+  <h1 class="q" id="q"></h1>
+  <div class="opts" id="opts"></div>
+  <div class="why" id="why"></div>
+</main>
+<section class="end" id="end">
+  <h1>That&rsquo;s all folks!</h1>
+  <p>Great work today</p>
+  <div class="bar"><span style="background:var(--red)"></span><span style="background:var(--blue)"></span><span style="background:var(--yellow)"></span><span style="background:var(--green)"></span></div>
+  <div class="sub">Press R or click Restart to go again</div>
+</section>
+<footer>
+  <span>Space / &rarr; = reveal, then next &nbsp;&middot;&nbsp; &larr; = back &nbsp;&middot;&nbsp; R = restart</span>
+  <div class="btns">
+    <button class="ctl" id="back">Back</button>
+    <button class="ctl primary" id="go">Reveal answer</button>
+  </div>
+</footer>
+<script>
+var QS=[
+ {q:"What are tectonic plates?",
+  o:["Huge slabs of rock that make up Earth's surface","Layers of clouds in the sky","Large pieces of metal inside volcanoes","Waves that travel through the ocean"],a:0,
+  w:"Earth's crust is broken into huge slabs of rock called tectonic plates. They move very slowly."},
+ {q:"What does it mean if a disease is infectious?",
+  o:["It is passed on through your genes","It is caused by not eating enough healthy food","It is caused by pollution in the environment","It can spread from one person to another"],a:3,
+  w:"Infectious diseases are caused by germs and can be passed on to other people. Non-infectious diseases cannot be caught from someone else."},
+ {q:"What are seismic waves?",
+  o:["Waves of water that flood the coast", "Waves of smoke that rise from a volcano", "Waves of energy that travel through the Earth from an earthquake", "Waves of heat that move through the air"],a:2,
+  w:"Seismic waves carry the energy of an earthquake through the Earth. Scientists measure them to work out how strong the earthquake was."},
+ {q:"Where do most volcanoes form?",
+  o:["In the middle of deserts", "Along the edges of tectonic plates", "Only at the North and South Poles", "Only on islands"],a:1,
+  w:"Most volcanoes form at plate boundaries, where plates move together or apart. This is why we can map them and compare them with the plates."},
+ {q:"Why do many more people get sick after a natural disaster?",
+  o:["The weather always gets colder","People stop sleeping","There is no clean water or safe food","Germs only appear after disasters"],a:2,
+  w:"Disasters can damage water supplies and food. Dirty water and spoiled food let diseases spread quickly."},
+ {q:"Why does washing your hands help prevent infectious disease?",
+  o:["It gives your body a vaccine", "It removes germs before they can get into your body", "It makes your body grow stronger", "It kills all the good bacteria in your body"],a:1,
+  w:"Good hygiene is the body's first line of defence. Washing stops germs from reaching your mouth, nose and eyes."},
+ {q:"Which statement about earthquakes is correct?",
+  o:["They can be measured but not predicted", "They can be predicted exactly weeks before", "They only happen in Asia", "They cannot be measured"],a:0,
+  w:"Scientists can measure earthquakes, but they cannot predict exactly when one will happen. Earthquakes can be used to warn about a tsunami."},
+ {q:"Which of these is a NON-infectious disease?",
+  o:["Whooping cough", "Dengue fever", "Swine flu", "Asthma"],a:3,
+  w:"Asthma cannot be caught from another person. It happens when the airways react to triggers like dust, pollen or exercise. The others are caused by germs."},
+ {q:"What is the Ring of Fire?",
+  o:["A line of bushfires across Australia","An area around the Pacific Ocean with lots of volcanoes and earthquakes","A circle of hot water under the sea","A tsunami warning system"],a:1,
+  w:"The Ring of Fire follows the edges of plates around the Pacific. It includes Japan, Indonesia, the Philippines and New Zealand."},
+ {q:"In 2011, a huge earthquake and tsunami hit which country?",
+  o:["Brazil", "Egypt", "Japan", "Canada"],a:2,
+  w:"Japan was hit in 2011. Japan has kept records of tsunamis for hundreds of years."},
+ {q:"A student with asthma and a student with whooping cough sit in the same class. Which statement is correct?",
+  o:["Only the student with whooping cough can pass it on, because it is caused by germs", "Both students can pass their disease on to classmates", "Only the student with asthma can pass it on", "Neither student can pass their disease on"],a:0,
+  w:"Whooping cough is infectious, so the germs can spread to other people. Asthma is non-infectious, so classmates cannot catch it."},
+ {q:"What usually causes a tsunami?",
+  o:["Strong winds on the surface of the sea","The moon pulling on the ocean","Movement of Earth's plates under the ocean","Boats making big waves"],a:2,
+  w:"The movement of plates under the sea can cause both an earthquake and a tsunami. A tsunami is a series of very large waves."},
+ {q:"What happens at a convergent plate boundary?",
+  o:["Two plates slide sideways past each other", "Two plates move apart", "Two plates stay perfectly still", "Two plates move towards each other"],a:3,
+  w:"Convergent means coming together. At a divergent boundary the plates move apart."},
+ {q:"A vaccine contains a weakened or dead germ, or a harmless part of one. What does this do?",
+  o:["It cures you if you are already sick", "It makes your immune system produce antibodies and remember the germ, so it can fight it quickly next time", "It kills all the germs in your body straight away", "It makes you safe from every disease"],a:1,
+  w:"The weakened or dead germ cannot make you sick, but your immune system still learns to recognise it. Edward Jenner developed the first vaccine, for smallpox."},
+ {q:"Why do people use back burning (controlled burning) in Australia?",
+  o:["To make bushfires bigger","To clear land for tsunamis","To reduce dry leaves and bushes so bushfires are less dangerous","To increase the smoke in the air"],a:2,
+  w:"Back burning removes fuel before a bushfire season. Indigenous Australians have used fire to look after the land for thousands of years."},
+ {q:"Why do plants struggle after a big volcanic eruption?",
+  o:["Ash and acid rain block sunlight and damage leaves, so photosynthesis is hard", "Ash makes the ocean too salty", "Lava cools the air too much", "Plants only grow when it is windy"],a:0,
+  w:"Ash can cover leaves and block sunlight, and acid rain damages plants. This is an effect on the biosphere."},
+ {q:"What is the epicentre of an earthquake?",
+  o:["The tallest wave in a tsunami", "The point on the Earth's surface directly above where the earthquake starts", "The crater at the top of a volcano", "The place where the earthquake ends"],a:1,
+  w:"The epicentre is the point on the surface directly above where the earthquake begins underground. Maps of epicentres show where earthquakes happen."},
+ {q:"Scientists cannot predict earthquakes, but they can use them to warn about a tsunami. How?",
+  o:["Tsunamis always arrive a year after an earthquake", "Earthquakes make the sea go completely calm", "Earthquake waves are detected before the tsunami reaches land, giving time to warn people", "Animals warn us before an earthquake"],a:2,
+  w:"Seismic waves travel much faster than a tsunami. Detecting the quake first gives people time to move to higher ground."},
+ {q:"Alfred Wegener is known for suggesting that:",
+  o:["the continents slowly move over time", "volcanoes are caused by tsunamis", "the Earth is flat", "earthquakes can be predicted exactly"],a:0,
+  w:"Wegener proposed continental drift. This idea later became part of plate tectonic theory."},
+ {q:"Why do scientists keep records of past disasters?",
+  o:["To make the disasters happen again","To work out how often they happen and predict the future","To find out who is to blame","Because records are fun to read"],a:1,
+  w:"We predict the future by learning about the past, like how often a volcano erupts. Some Asian countries have kept tsunami records for hundreds of years."}
+];
+var i=0,shown=false,ended=false,L=["A","B","C","D"];
+var SH=['<svg viewBox="0 0 32 32"><path d="M16 3 30 28H2z"/></svg>','<svg viewBox="0 0 32 32"><path d="M16 1 31 16 16 31 1 16z"/></svg>','<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="14"/></svg>','<svg viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" rx="2"/></svg>'];
+var $=function(id){return document.getElementById(id)};
+var dotsEl=$("dots");
+QS.forEach(function(_,k){var d=document.createElement("button");d.className="dot";d.setAttribute("aria-label","Question "+(k+1));d.onclick=function(){i=k;shown=false;ended=false;render()};dotsEl.appendChild(d)});
+function render(){
+  if(ended){
+    $("num").textContent="The end";
+    $("main").style.display="none";$("end").style.display="flex";
+    $("go").textContent="Restart";$("back").disabled=false;
+    [].forEach.call(dotsEl.children,function(d){d.className="dot done"});
+    return;
+  }
+  $("main").style.display="";$("end").style.display="none";
+  var Q=QS[i];
+  $("num").textContent="Question "+(i+1)+" of "+QS.length;
+  $("q").textContent=Q.q;
+  var o=$("opts");o.innerHTML="";
+  Q.o.forEach(function(t,k){
+    var b=document.createElement("div");b.className="opt c"+k+(k===Q.a?" correct":"");
+    b.innerHTML='<span class="ltr">'+L[k]+'</span>';
+    var s=document.createElement("span");s.textContent=t;b.appendChild(s);
+    var c=document.createElement("span");c.className="tick";c.textContent="\u2713";b.appendChild(c);
+    o.appendChild(b);
+  });
+  $("why").innerHTML="<b>Answer "+L[Q.a]+".</b> "+Q.w;
+  $("main").className=shown?"revealed":"";
+  $("go").textContent=shown?(i<QS.length-1?"Next question":"Finish"):"Reveal answer";
+  $("back").disabled=(i===0&&!shown);
+  [].forEach.call(dotsEl.children,function(d,k){d.className="dot"+(k<i?" done":"")+(k===i?" cur":"")});
+}
+function advance(){
+  if(ended){ended=false;i=0;shown=false}
+  else if(!shown){shown=true}
+  else if(i<QS.length-1){i++;shown=false}
+  else{ended=true}
+  render();
+}
+function back(){
+  if(ended){ended=false;shown=true}
+  else if(shown){shown=false}else if(i>0){i--;shown=true}
+  render();
+}
+$("go").onclick=advance;$("back").onclick=back;
+document.addEventListener("keydown",function(e){
+  if(e.key===" "||e.key==="ArrowRight"||e.key==="Enter"||e.key==="PageDown"){e.preventDefault();advance()}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();back()}
+  else if(e.key==="r"||e.key==="R"){i=0;shown=false;ended=false;render()}
+});
+render();
+</script>
+</body>
+</html>
